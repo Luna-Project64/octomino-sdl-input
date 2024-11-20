@@ -71,26 +71,26 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)\SDL\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\libusb\msvc;$(SolutionDir)\libusb\libusb;$(SolutionDir)\SDL\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\$(Configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)\SDL\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\libusb\msvc;$(SolutionDir)\libusb\libusb;$(SolutionDir)\SDL\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\$(Configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)\SDL\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\libusb\msvc;$(SolutionDir)\libusb\libusb;$(SolutionDir)\SDL\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\$(Configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)\SDL\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\libusb\msvc;$(SolutionDir)\libusb\libusb;$(SolutionDir)\SDL\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\$(Configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>HAVE_LIBC;SDL_VIDEO_OPENGL_EGL=0;SDL_VIDEO_RENDER_SW=0;SDL_VIDEO_RENDER_OGL_ES2=0;SDL_VIDEO_RENDER_D3D=0;SDL_VIDEO_RENDER_D3D11=0;SDL_VIDEO_RENDER_D3D12=0;SDL_SENSOR_DISABLED;SDL_HAPTIC_DISABLED;SDL_AUDIO_DISABLED;SDL_TIMERS_DISABLED;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>HAVE_LIBC;HAVE_LIBUSB;SDL_VIDEO_OPENGL_EGL=0;SDL_VIDEO_RENDER_SW=0;SDL_VIDEO_RENDER_OGL_ES2=0;SDL_VIDEO_RENDER_D3D=0;SDL_VIDEO_RENDER_D3D11=0;SDL_VIDEO_RENDER_D3D12=0;SDL_SENSOR_DISABLED;SDL_HAPTIC_DISABLED;SDL_AUDIO_DISABLED;SDL_TIMERS_DISABLED;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
@@ -130,7 +130,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>HAVE_LIBC;SDL_VIDEO_OPENGL_EGL=0;SDL_VIDEO_RENDER_SW=0;SDL_VIDEO_RENDER_OGL_ES2=0;SDL_VIDEO_RENDER_D3D=0;SDL_VIDEO_RENDER_D3D11=0;SDL_VIDEO_RENDER_D3D12=0;SDL_SENSOR_DISABLED;SDL_HAPTIC_DISABLED;SDL_AUDIO_DISABLED;SDL_TIMERS_DISABLED;_CRT_SECURE_NO_WARNINGS;_DEBUG;OCTOMINOSDLINPUT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>HAVE_LIBC;HAVE_LIBUSB;SDL_VIDEO_OPENGL_EGL=0;SDL_VIDEO_RENDER_SW=0;SDL_VIDEO_RENDER_OGL_ES2=0;SDL_VIDEO_RENDER_D3D=0;SDL_VIDEO_RENDER_D3D11=0;SDL_VIDEO_RENDER_D3D12=0;SDL_SENSOR_DISABLED;SDL_HAPTIC_DISABLED;SDL_AUDIO_DISABLED;SDL_TIMERS_DISABLED;_CRT_SECURE_NO_WARNINGS;_DEBUG;OCTOMINOSDLINPUT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
@@ -176,6 +176,17 @@
     <ClInclude Include="src\zilmar_controller_1.0.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="libusb\libusb\core.c" />
+    <ClCompile Include="libusb\libusb\descriptor.c" />
+    <ClCompile Include="libusb\libusb\hotplug.c" />
+    <ClCompile Include="libusb\libusb\io.c" />
+    <ClCompile Include="libusb\libusb\os\events_windows.c" />
+    <ClCompile Include="libusb\libusb\os\threads_windows.c" />
+    <ClCompile Include="libusb\libusb\os\windows_common.c" />
+    <ClCompile Include="libusb\libusb\os\windows_usbdk.c" />
+    <ClCompile Include="libusb\libusb\os\windows_winusb.c" />
+    <ClCompile Include="libusb\libusb\strerror.c" />
+    <ClCompile Include="libusb\libusb\sync.c" />
     <ClCompile Include="SDL\src\atomic\SDL_atomic.c" />
     <ClCompile Include="SDL\src\atomic\SDL_spinlock.c" />
     <ClCompile Include="SDL\src\core\windows\SDL_hid.c" />

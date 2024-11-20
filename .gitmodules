@@ -1,3 +1,6 @@
 [submodule "SDL"]
 	path = SDL
 	url = https://github.com/libsdl-org/SDL.git
+[submodule "libusb"]
+	path = libusb
+	url = https://github.com/libusb/libusb.git

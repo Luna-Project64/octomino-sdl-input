@@ -16,6 +16,9 @@
     <Filter Include="Source Files\SDL">
       <UniqueIdentifier>{d6a608b2-ab18-4b32-85f3-1b5a213050d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\libusb">
+      <UniqueIdentifier>{d34cc449-0212-41cc-939b-3988975d478c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\config.h">
@@ -400,6 +403,39 @@
     </ClCompile>
     <ClCompile Include="sdl_Stubs.c">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libusb\libusb\core.c">
+      <Filter>Source Files\libusb</Filter>
+    </ClCompile>
+    <ClCompile Include="libusb\libusb\descriptor.c">
+      <Filter>Source Files\libusb</Filter>
+    </ClCompile>
+    <ClCompile Include="libusb\libusb\hotplug.c">
+      <Filter>Source Files\libusb</Filter>
+    </ClCompile>
+    <ClCompile Include="libusb\libusb\io.c">
+      <Filter>Source Files\libusb</Filter>
+    </ClCompile>
+    <ClCompile Include="libusb\libusb\strerror.c">
+      <Filter>Source Files\libusb</Filter>
+    </ClCompile>
+    <ClCompile Include="libusb\libusb\sync.c">
+      <Filter>Source Files\libusb</Filter>
+    </ClCompile>
+    <ClCompile Include="libusb\libusb\os\events_windows.c">
+      <Filter>Source Files\libusb</Filter>
+    </ClCompile>
+    <ClCompile Include="libusb\libusb\os\threads_windows.c">
+      <Filter>Source Files\libusb</Filter>
+    </ClCompile>
+    <ClCompile Include="libusb\libusb\os\windows_common.c">
+      <Filter>Source Files\libusb</Filter>
+    </ClCompile>
+    <ClCompile Include="libusb\libusb\os\windows_usbdk.c">
+      <Filter>Source Files\libusb</Filter>
+    </ClCompile>
+    <ClCompile Include="libusb\libusb\os\windows_winusb.c">
+      <Filter>Source Files\libusb</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
