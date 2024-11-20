@@ -5,12 +5,17 @@
 #ifndef OCTOMINO_SDL_INPUT_H_
 #define OCTOMINO_SDL_INPUT_H_
 
-#include <synchapi.h>
-#include <SDL2/SDL_gamecontroller.h>
-#include <SDL2/SDL_version.h>
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <SDL_gamecontroller.h>
+#include <SDL_version.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <limits.h>
+
+#ifndef PATH_MAX
+#define PATH_MAX MAX_PATH
+#endif
 
 extern CRITICAL_SECTION critical_section; 
 
@@ -27,6 +32,9 @@ extern int initialized;
     TOSTRING(SDL_MINOR_VERSION) "." \
     TOSTRING(SDL_PATCHLEVEL)
 
+#define PLUGIN_NAME    "Octomino SDL Input Plugin"
+#define PLUGIN_VERSION "1.0"
+#define PLUGIN_REPO ""
 #define PLUGIN_ABOUT   \
     PLUGIN_NAME \
     "\nVersion " PLUGIN_VERSION \

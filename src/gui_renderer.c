@@ -2,8 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_opengl.h>
+#include <SDL.h>
+#include <SDL_opengl.h>
 #include <assert.h>
 #include "gui_renderer.h"
 #include "atlas.inl"
@@ -21,6 +21,7 @@ static int buf_idx;
 
 static SDL_Window *window;
 
+#define PLUGIN_NAME "Octomino's SDL Input"
 
 void r_init(void) {
     /* init SDL window */

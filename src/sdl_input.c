@@ -4,8 +4,8 @@
 
 #include "sdl_input.h"
 #define SDL_MAIN_HANDLED
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_gamecontroller.h>
+#include <SDL.h>
+#include <SDL_gamecontroller.h>
 #include <stdarg.h>
 #include <time.h>
 #include <limits.h>
