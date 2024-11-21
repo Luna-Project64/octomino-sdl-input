@@ -4,3 +4,6 @@
 [submodule "libusb"]
 	path = libusb
 	url = https://github.com/libusb/libusb.git
+[submodule "SDL_GameControllerDB"]
+	path = SDL_GameControllerDB
+	url = https://github.com/mdqinc/SDL_GameControllerDB.git

@@ -12,8 +12,6 @@
 #include <limits.h>
 #include "gui.h"
 
-CRITICAL_SECTION critical_section; 
-
 FILE *logfile;
 char dbpath[PATH_MAX];
 
@@ -23,11 +21,8 @@ int joy_inst = -1;
 
 void try_init(void)
 {
-    EnterCriticalSection(&critical_section);
-
     if (initialized) {
         dlog("Attempted initialize, but SDL is already initialized");
-        LeaveCriticalSection(&critical_section);
         return;
     }
     dlog("Initializing");
@@ -50,30 +45,23 @@ void try_init(void)
     }
     else
         dlog("    SDL has failed to initialize");
-
-    LeaveCriticalSection(&critical_section);
 }
 
 void deinit(void)
 {
-    EnterCriticalSection(&critical_section);
     if (!initialized) {
-        LeaveCriticalSection(&critical_section);
         return;
     }
 
     dlog("Deinitializing");
 
     con_close();
-    SDL_Quit();
+    SDL_QuitSubSystem(SDL_INIT_GAMEPAD);
     initialized = 0;
-    LeaveCriticalSection(&critical_section);
 }
 
 void con_open(void)
 {
-    EnterCriticalSection(&critical_section);
-
     dlog("Attempting to open a controller");
 
     if (!initialized) {
@@ -83,13 +71,11 @@ void con_open(void)
 
     if (!initialized) {
         dlog("Failed to open a controller: SDL not initialized");
-        LeaveCriticalSection(&critical_section);
         return;
     }
 
     if (con != NULL) {
         dlog("Failed to open a controller: controller is not null");
-        LeaveCriticalSection(&critical_section);
         return;
     }
 
@@ -143,16 +129,12 @@ void con_open(void)
 
     if (con == NULL)
         dlog("    Couldn't find a viable controller :(");
-    
-    LeaveCriticalSection(&critical_section);
 }
 
 void con_close(void)
 {
-    EnterCriticalSection(&critical_section);
     if (!initialized && con != NULL) con = NULL;
     if (!initialized || con == NULL) {
-        LeaveCriticalSection(&critical_section);
         return;
     }
 
@@ -160,7 +142,6 @@ void con_close(void)
     SDL_CloseGamepad(con);
     con = NULL;
     joy_inst = -1;
-    LeaveCriticalSection(&critical_section);
 }
 
 int16_t threshold(int16_t val, float cutoff)
@@ -234,17 +215,14 @@ int16_t smax(int16_t val, int16_t max)
 
 void con_get_inputs(inputs_t *i)
 {
-    EnterCriticalSection(&critical_section);
     if (!initialized)
     {
         dlog("Attempting to get inputs but SDL is not initialized");
         try_init();
         if (!initialized) {
-            LeaveCriticalSection(&critical_section);
             return;
         }
     }
-    LeaveCriticalSection(&critical_section);
 
     SDL_Event e;
     while (SDL_PollEvent(&e))
@@ -273,10 +251,8 @@ void con_get_inputs(inputs_t *i)
             break;
         }
 
-    EnterCriticalSection(&critical_section);
     if (con != NULL)
         con_write_inputs(i);
-    LeaveCriticalSection(&critical_section);
 }
 
 static inline uint8_t con_get_but(SDL_GamepadButton b)

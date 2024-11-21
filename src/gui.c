@@ -16,7 +16,6 @@ static  char logbuf[LOG_SIZE];
 static   int logbuf_updated = 0;
 static float bg[3] = { 90, 95, 100 };
 
-static int window_open = 0;
 static mu_Context *context;
 static char not_available[] = "N/A";
 
@@ -339,18 +338,9 @@ static int text_height(mu_Font font) {
 
 
 void config_window(HWND hwnd) {
-    EnterCriticalSection(&critical_section);
-
     if (!initialized) {
-        LeaveCriticalSection(&critical_section);
         return;
     }
-    if (window_open) {
-        LeaveCriticalSection(&critical_section);
-        return;
-    }
-
-    window_open = 1;
 
     /* init renderer */
     r_init(hwnd);
@@ -362,15 +352,16 @@ void config_window(HWND hwnd) {
     context->text_height = text_height;
 
     /* main loop */
-    while (window_open) {
-        LeaveCriticalSection(&critical_section);
+    bool running = true;
+    while (running) {
         /* handle SDL events */
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
             switch (e.type) {
                 case SDL_EVENT_QUIT:
                 case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
-                    gui_deinit(); break;
+                    running = false;
+                    break;
                 case SDL_EVENT_MOUSE_MOTION: mu_input_mousemove(context, e.motion.x, e.motion.y); break;
                 case SDL_EVENT_MOUSE_WHEEL: mu_input_scroll(context, 0, e.wheel.y * -30); break;
                 case SDL_EVENT_TEXT_INPUT: mu_input_text(context, e.text.text); break;
@@ -394,9 +385,7 @@ void config_window(HWND hwnd) {
         }
 
         /* process frame */
-        EnterCriticalSection(&critical_section);
         process_frame(context);
-        LeaveCriticalSection(&critical_section);
 
         /* render */
         r_clear(mu_color(bg[0], bg[1], bg[2], 255));
@@ -410,19 +399,8 @@ void config_window(HWND hwnd) {
             }
         }
         r_present();
-
-        EnterCriticalSection(&critical_section);
     }
 
     free(context);
     r_close();
-
-    LeaveCriticalSection(&critical_section);
-}
-
-void gui_deinit()
-{
-    EnterCriticalSection(&critical_section);
-    window_open = 0;
-    LeaveCriticalSection(&critical_section);
 }

@@ -17,8 +17,6 @@
 #define PATH_MAX MAX_PATH
 #endif
 
-extern CRITICAL_SECTION critical_section; 
-
 extern FILE *logfile;
 extern char dbpath[PATH_MAX];
 extern SDL_Gamepad *con;

@@ -12,14 +12,16 @@
 #include "sdl_input.h"
 #include "gui.h"
 #include "config.h"
+#include "rundown_protection.h"
+
+static bool window_open = false;
+static bool emu_active = false;
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
 {
     switch (fdwReason)
     {
     case DLL_PROCESS_ATTACH:
-        InitializeCriticalSection(&critical_section);
-
         // make a log file
         CreateDirectoryA("Logs", NULL);
         char _strPath[_MAX_PATH];
@@ -47,8 +49,6 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
     case DLL_PROCESS_DETACH:
         fclose(logfile);
         config_deinit();
-
-        DeleteCriticalSection(&critical_section);
         break;
     }
     return TRUE;
@@ -57,6 +57,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
 EXPORT void CALL CloseDLL(void)
 {
     dlog("CloseDLL() call");
+    rp_deactivate_wait();
     deinit();
 }
 
@@ -73,11 +74,24 @@ EXPORT void CALL DllAbout(HWND hParent)
     );
 }
 
+// This function MUST be called from the main thread so we can cause rundown properly
 EXPORT void CALL DllConfig(HWND hParent)
 {
+    if (window_open)
+		return;
+
     dlog("DllConfig() call");
+    window_open = true;
+
+    // TODO: Race condition - if emu is initializing while config is being opened, rp wont be activated
+    // I do not believe it is possible to fix this and chance of this happening is very low
+    rp_deactivate_wait();
     con_open();
     config_window(hParent);
+    if (emu_active)
+        rp_activate();
+
+	window_open = false;
 }
 
 //EXPORT void CALL DllTest(HWND hParent) {}
@@ -241,12 +255,14 @@ static int16_t get_state_mapping_axis(inputs_t *i, ControllerMapping *plus, Cont
 
 EXPORT void CALL GetKeys(int Control, BUTTONS *Keys)
 {
+    bool ok = rp_protect();
+    if (!ok)
+        return;
+
     inputs_t i = {0};
     con_get_inputs(&i);
 
     Keys->Value = 0;
-
-    EnterCriticalSection(&critical_section);
 
     Keys->R_DPAD = get_state_mapping_button(&i, &concfg.dright);
     Keys->L_DPAD = get_state_mapping_button(&i, &concfg.dleft);
@@ -268,13 +284,13 @@ EXPORT void CALL GetKeys(int Control, BUTTONS *Keys)
     int16_t y = get_state_mapping_axis(&i, &concfg.down, &concfg.up);
     scale_and_limit(&x, &y, concfg.deadzone, concfg.outer_edge);
 
-    LeaveCriticalSection(&critical_section);
-
     n64_analog(
         Keys,
         x,
         y
     );
+
+    rp_unprotect();
 }
 
 EXPORT void CALL InitiateControllers(HWND hMainWindow, CONTROL Controls[4])
@@ -291,14 +307,20 @@ EXPORT void CALL InitiateControllers(HWND hMainWindow, CONTROL Controls[4])
 
 EXPORT void CALL RomClosed(void) 
 {
-    // Project64 2.x and later: need a dummy function for this
-    // since it became mandatory for whatever reason...
+    // TODO: Race condition with DllConfig
+    emu_active = false;
+    rp_deactivate_wait();
+    deinit();
 }
 
 EXPORT void CALL RomOpen(void)
 {
     dlog("RomOpen() call");
+    srp_main_thread_id = GetWindowThreadProcessId(GetActiveWindow(), NULL);
     con_open();
+    rp_activate();
+	// TODO: Race condition with DllConfig
+    emu_active = true;
 }
 
 //EXPORT void CALL WM_KeyDown(WPARAM wParam, LPARAM lParam) {}
