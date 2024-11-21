@@ -42,6 +42,9 @@
     <ClInclude Include="src\zilmar_controller_1.0.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SDL_build_config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\api.c">
@@ -92,19 +95,10 @@
     <ClCompile Include="SDL\src\SDL_log.c">
       <Filter>Source Files\SDL</Filter>
     </ClCompile>
-    <ClCompile Include="SDL\src\joystick\SDL_gamecontroller.c">
-      <Filter>Source Files\SDL</Filter>
-    </ClCompile>
-    <ClCompile Include="SDL\src\file\SDL_rwops.c">
-      <Filter>Source Files\SDL</Filter>
-    </ClCompile>
     <ClCompile Include="SDL\src\joystick\SDL_joystick.c">
       <Filter>Source Files\SDL</Filter>
     </ClCompile>
     <ClCompile Include="SDL\src\events\SDL_events.c">
-      <Filter>Source Files\SDL</Filter>
-    </ClCompile>
-    <ClCompile Include="SDL\src\events\SDL_gesture.c">
       <Filter>Source Files\SDL</Filter>
     </ClCompile>
     <ClCompile Include="SDL\src\joystick\SDL_steam_virtual_gamepad.c">
@@ -272,9 +266,6 @@
     <ClCompile Include="SDL\src\video\SDL_RLEaccel.c">
       <Filter>Source Files\SDL</Filter>
     </ClCompile>
-    <ClCompile Include="SDL\src\video\SDL_fillrect.c">
-      <Filter>Source Files\SDL</Filter>
-    </ClCompile>
     <ClCompile Include="SDL\src\video\SDL_yuv.c">
       <Filter>Source Files\SDL</Filter>
     </ClCompile>
@@ -285,9 +276,6 @@
       <Filter>Source Files\SDL</Filter>
     </ClCompile>
     <ClCompile Include="SDL\src\thread\windows\SDL_systls.c">
-      <Filter>Source Files\SDL</Filter>
-    </ClCompile>
-    <ClCompile Include="SDL\src\render\SDL_render.c">
       <Filter>Source Files\SDL</Filter>
     </ClCompile>
     <ClCompile Include="SDL\src\render\opengl\SDL_render_gl.c">
@@ -329,9 +317,6 @@
     <ClCompile Include="SDL\src\haptic\windows\SDL_windowshaptic.c">
       <Filter>Source Files\SDL</Filter>
     </ClCompile>
-    <ClCompile Include="SDL\src\haptic\windows\SDL_xinputhaptic.c">
-      <Filter>Source Files\SDL</Filter>
-    </ClCompile>
     <ClCompile Include="SDL\src\haptic\SDL_haptic.c">
       <Filter>Source Files\SDL</Filter>
     </ClCompile>
@@ -363,9 +348,6 @@
       <Filter>Source Files\SDL</Filter>
     </ClCompile>
     <ClCompile Include="SDL\src\video\windows\SDL_windowsmouse.c">
-      <Filter>Source Files\SDL</Filter>
-    </ClCompile>
-    <ClCompile Include="SDL\src\video\SDL_shape.c">
       <Filter>Source Files\SDL</Filter>
     </ClCompile>
     <ClCompile Include="SDL\src\events\SDL_dropevents.c">
@@ -436,6 +418,84 @@
     </ClCompile>
     <ClCompile Include="libusb\libusb\os\windows_winusb.c">
       <Filter>Source Files\libusb</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\events\SDL_keymap.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\joystick\SDL_gamepad.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\SDL_hashtable.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\SDL_properties.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\filesystem\SDL_filesystem.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\file\SDL_iostream.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\filesystem\windows\SDL_sysfilesystem.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\filesystem\windows\SDL_sysfsops.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\events\SDL_pen.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\video\SDL_clipboard.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\thread\windows\SDL_sysrwlock_srw.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\sensor\dummy\SDL_dummysensor.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\thread\generic\SDL_sysrwlock.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\joystick\hidapi\SDL_hidapi_steam_hori.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\video\windows\SDL_windowsgameinput.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\sensor\SDL_sensor.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\sensor\windows\SDL_windowssensor.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\video\windows\SDL_windowsrawinput.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\main\SDL_main_callbacks.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\render\SDL_render.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\video\SDL_fillrect.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\stdlib\SDL_strtokr.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\time\SDL_time.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\stdlib\SDL_murmur3.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\stdlib\SDL_memset.c">
+      <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL\src\time\windows\SDL_systime.c">
+      <Filter>Source Files\SDL</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

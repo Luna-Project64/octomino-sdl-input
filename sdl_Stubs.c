@@ -1,73 +1,23 @@
 #include <stdlib.h>
+#include "render/SDL_sysrender.h"
 
-// Some functions are still getting used from SDL even though I have explicitly disabled them.
-// So, I have to provide stubs for them.
-void* SDL_EGL_GetProcAddress()
+static bool stub_CreateRenderer(SDL_Renderer* renderer, SDL_Window* window, SDL_PropertiesID create_props)
 {
-	abort();
+    return false;
 }
 
-int SDL_EGL_GetSwapInterval()
-{
-	abort();
-}
+SDL_RenderDriver D3D11_RenderDriver = {
+    stub_CreateRenderer, "direct3d11"
+};
 
-int SDL_EGL_SetSwapInterval()
-{
-	abort();
-}
+SDL_RenderDriver D3D12_RenderDriver = {
+    stub_CreateRenderer, "direct3d11"
+};
 
-void SDL_EGL_UnloadLibrary()
-{
-	abort();
-}
+SDL_RenderDriver D3D_RenderDriver = {
+    stub_CreateRenderer, "direct3d"
+};
 
-void* WIN_GLES_CreateContext()
-{
-	abort();
-}
-
-void WIN_GLES_DeleteContext()
-{
-	abort();
-}
-
-int WIN_GLES_LoadLibrary()
-{
-	abort();
-}
-
-int WIN_GLES_MakeCurrent()
-{
-	abort();
-}
-
-int WIN_GLES_SetupWindow()
-{
-	abort();
-}
-
-int WIN_GLES_SwapWindow()
-{
-	abort();
-}
-
-int WIN_Vulkan_LoadLibrary()
-{
-	abort();
-}
-
-void WIN_Vulkan_UnloadLibrary()
-{
-	abort();
-}
-
-int WIN_Vulkan_GetInstanceExtensions()
-{
-	abort();
-}
-
-int WIN_Vulkan_CreateSurface()
-{
-	abort();
-}
+SDL_RenderDriver GLES2_RenderDriver = {
+    stub_CreateRenderer, "opengles2"
+};

@@ -2,8 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include <SDL.h>
-#include <SDL_opengl.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_opengl.h>
 #include <assert.h>
 #include "gui_renderer.h"
 #include "atlas.inl"
@@ -25,9 +25,7 @@ static SDL_Window *window;
 
 void r_init(void) {
     /* init SDL window */
-    window = SDL_CreateWindow(
-        PLUGIN_NAME, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-        width, height, SDL_WINDOW_OPENGL);
+    window = SDL_CreateWindow(PLUGIN_NAME, width, height, SDL_WINDOW_OPENGL);
     SDL_GL_CreateContext(window);
 
     /* init gl */

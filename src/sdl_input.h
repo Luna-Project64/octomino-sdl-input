@@ -7,8 +7,8 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <SDL_gamecontroller.h>
-#include <SDL_version.h>
+#include <SDL3/SDL_gamepad.h>
+#include <SDL3/SDL_version.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <limits.h>
@@ -21,7 +21,7 @@ extern CRITICAL_SECTION critical_section;
 
 extern FILE *logfile;
 extern char dbpath[PATH_MAX];
-extern SDL_GameController *con;
+extern SDL_Gamepad *con;
 extern int initialized;
 
 #define STRINGIFY(x) #x
