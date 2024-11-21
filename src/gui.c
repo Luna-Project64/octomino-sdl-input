@@ -338,7 +338,7 @@ static int text_height(mu_Font font) {
 }
 
 
-void config_window() {
+void config_window(HWND hwnd) {
     EnterCriticalSection(&critical_section);
 
     if (!initialized) {
@@ -353,7 +353,7 @@ void config_window() {
     window_open = 1;
 
     /* init renderer */
-    r_init();
+    r_init(hwnd);
 
     /* init microui */
     context = malloc(sizeof(mu_Context));
@@ -368,7 +368,9 @@ void config_window() {
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
             switch (e.type) {
-                case SDL_EVENT_QUIT: gui_deinit(); break;
+                case SDL_EVENT_QUIT:
+                case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
+                    gui_deinit(); break;
                 case SDL_EVENT_MOUSE_MOTION: mu_input_mousemove(context, e.motion.x, e.motion.y); break;
                 case SDL_EVENT_MOUSE_WHEEL: mu_input_scroll(context, 0, e.wheel.y * -30); break;
                 case SDL_EVENT_TEXT_INPUT: mu_input_text(context, e.text.text); break;

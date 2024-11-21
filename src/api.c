@@ -77,7 +77,7 @@ EXPORT void CALL DllConfig(HWND hParent)
 {
     dlog("DllConfig() call");
     con_open();
-    config_window();
+    config_window(hParent);
 }
 
 //EXPORT void CALL DllTest(HWND hParent) {}
