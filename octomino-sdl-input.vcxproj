@@ -167,6 +167,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="rundown_protection.h" />
     <ClInclude Include="SDL_build_config.h" />
     <ClInclude Include="src\config.h" />
     <ClInclude Include="src\gui.h" />
@@ -188,6 +189,7 @@
     <ClCompile Include="libusb\libusb\os\windows_winusb.c" />
     <ClCompile Include="libusb\libusb\strerror.c" />
     <ClCompile Include="libusb\libusb\sync.c" />
+    <ClCompile Include="rundown_protection.cpp" />
     <ClCompile Include="SDL\src\atomic\SDL_atomic.c" />
     <ClCompile Include="SDL\src\atomic\SDL_spinlock.c" />
     <ClCompile Include="SDL\src\core\windows\SDL_hid.c" />

@@ -7,4 +7,3 @@
 
 void write_log(char *text);
 void config_window(HWND);
-void gui_deinit();

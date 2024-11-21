@@ -45,6 +45,9 @@
     <ClInclude Include="SDL_build_config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rundown_protection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\api.c">
@@ -496,6 +499,9 @@
     </ClCompile>
     <ClCompile Include="SDL\src\time\windows\SDL_systime.c">
       <Filter>Source Files\SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="rundown_protection.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
