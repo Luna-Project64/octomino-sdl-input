@@ -4,6 +4,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#include <Shlobj.h>
 #include <Shlwapi.h>
 #include <stdio.h>
 #include <math.h>
@@ -21,15 +22,25 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
 
         // make a log file
         CreateDirectoryA("Logs", NULL);
-        logfile = fopen("Logs\\" PLUGIN_NAME ".txt", "w");
+        char _strPath[_MAX_PATH];
+        SHGetFolderPathA(NULL,
+            CSIDL_APPDATA,
+            NULL,
+            0,
+            _strPath);
+
+        PathAppendA(_strPath, "Octomino");
+		CreateDirectoryA(_strPath, NULL);
+		PathAppendA(_strPath, "Logs");
+		CreateDirectoryA(_strPath, NULL);
+		PathAppendA(_strPath, "Octomino.txt");
+        logfile = fopen(_strPath, "w");
 
         // get path to gamecontroller.txt
         GetModuleFileNameA(hinstDLL, dbpath, sizeof(dbpath));
         PathRemoveFileSpecA(dbpath);
         PathCombineA(dbpath, dbpath, "gamecontrollerdb.txt");
 
-        // make/load a config file
-        CreateDirectoryA("Config", NULL);
         config_initialize(&concfg);
 
         break;
@@ -66,7 +77,7 @@ EXPORT void CALL DllConfig(HWND hParent)
 {
     dlog("DllConfig() call");
     con_open();
-    config_window();
+    config_window(hParent);
 }
 
 //EXPORT void CALL DllTest(HWND hParent) {}

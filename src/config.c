@@ -5,12 +5,14 @@
 #define INI_IMPLEMENTATION
 #include "ini.h"
 #include "config.h"
+#include <Shlobj.h>
+#include <shlwapi.h>
 #include <stdio.h>
 #include <errno.h>
 #include "sdl_input.h"
 
 ControllerConfig concfg;
-char configpath[PATH_MAX] = "Config\\" PLUGIN_NAME ".ini";
+char configpath[260];
 
 static const char suffix_primary[] = "_primary";
 static const char suffix_secondary[] = "_secondary";
@@ -218,7 +220,7 @@ static void config_load_con(ControllerConfig *cfg, ini_t *ini, char con_id)
     for (int i = 0; i < concfg_field_count; ++i) {
         ControllerConfigInfo field = concfg_field_info[i];
 
-        void *p = (void*)cfg + field.struct_offset;
+        void *p = (char*)cfg + field.struct_offset;
 
         int *val_i = p;
         float *val_f = p;
@@ -257,7 +259,7 @@ static void config_save_con(ControllerConfig *cfg, ini_t *ini, char con_id)
     for (int i = 0; i < concfg_field_count; ++i) {
         ControllerConfigInfo field = concfg_field_info[i];
 
-        void *p = (void*)cfg + field.struct_offset;
+        void *p = (char*)cfg + field.struct_offset;
 
         int *val_i = p;
         float *val_f = p;
@@ -289,11 +291,11 @@ void config_load()
     if (configfile != NULL) {
         configini = ini_load_file(configfile);
         dlog("Loaded config file %s", configpath);
+        fclose(configfile);
     } else {
         configini = ini_create(0);
         dlog("Unable to open config file %s: %s", configpath, strerror(errno));
     }
-    fclose(configfile);
 
     config_load_con(&concfg, configini, '0');
 }
@@ -324,6 +326,13 @@ void config_save()
 
 void config_initialize()
 {
+    SHGetFolderPathA(NULL,
+        CSIDL_APPDATA,
+        NULL,
+        0,
+        configpath);
+    PathAppendA(configpath, "Octomino\\cfg.ini");
+
     concfg_set_defaults(&concfg);
     config_load();
 }

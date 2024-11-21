@@ -4,8 +4,9 @@
 
 #include "sdl_input.h"
 #define SDL_MAIN_HANDLED
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_gamecontroller.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_gamepad.h>
+#include <SDL3/SDL_main.h>
 #include <stdarg.h>
 #include <time.h>
 #include <limits.h>
@@ -17,7 +18,7 @@ FILE *logfile;
 char dbpath[PATH_MAX];
 
 int initialized = 0;
-SDL_GameController *con = NULL;
+SDL_Gamepad *con = NULL;
 int joy_inst = -1;
 
 void try_init(void)
@@ -32,13 +33,13 @@ void try_init(void)
     dlog("Initializing");
 
     SDL_SetMainReady();
-    if (!SDL_Init(SDL_INIT_GAMECONTROLLER))
+    if (SDL_Init(SDL_INIT_GAMEPAD))
     {
         /* deal with the unnessessary initial controller connected
            events so they don't clog up the log file */
-        SDL_FlushEvents(SDL_FIRSTEVENT, SDL_LASTEVENT);
+        SDL_FlushEvents(SDL_EVENT_FIRST, SDL_EVENT_LAST);
 
-        int mapcount = SDL_GameControllerAddMappingsFromFile(dbpath);
+        int mapcount = SDL_AddGamepadMappingsFromFile(dbpath);
         if (mapcount == -1)
             dlog("    Unable to load mappings from %s", dbpath);
         else
@@ -92,26 +93,38 @@ void con_open(void)
         return;
     }
 
-    dlog("    # of joysticks: %d", SDL_NumJoysticks());
+    int count;
+    SDL_JoystickID* joysticks = SDL_GetJoysticks(&count);
+	if (!joysticks) {
+		dlog("    Couldn't get joysticks");
+        count = 0;
+	}
+
+    dlog("    # of joysticks: %d", count);
 
     // open the first available controller
-    for (int i = 0; i < SDL_NumJoysticks(); ++i)
+    for (int i = 0; i < count; ++i)
     {
-        if (SDL_IsGameController(i) && (con = SDL_GameControllerOpen(i)) != NULL)
-        {
-            dlog("    Found a viable controller: %s (joystick %d)", SDL_GameControllerName(con), i);
+        SDL_JoystickID joystick = joysticks[i];
+		if (!SDL_IsGamepad(joystick))
+			continue;
 
-            SDL_Joystick *joy = SDL_GameControllerGetJoystick(con);
+		con = SDL_OpenGamepad(joystick);
+        if (con != NULL)
+        {
+            dlog("    Found a viable controller: %s (joystick %d)", SDL_GetGamepadName(con), i);
+
+            SDL_Joystick *joy = SDL_GetGamepadJoystick(con);
     
-            joy_inst = SDL_JoystickInstanceID(joy);
+            joy_inst = SDL_GetJoystickID(joy);
             dlog("        Joystick instance ID: %d", joy_inst);
 
-            SDL_JoystickGUID guid = SDL_JoystickGetGUID(joy);
+            SDL_GUID guid = SDL_GetJoystickGUID(joy);
             char guidstr[33];
-            SDL_JoystickGetGUIDString(guid, guidstr, sizeof(guidstr));
+            SDL_GUIDToString(guid, guidstr, sizeof(guidstr));
             dlog("        Joystick GUID: %s", guidstr);
 
-            char *mapping = SDL_GameControllerMapping(con);
+            char *mapping = SDL_GetGamepadMapping(con);
             if (mapping != NULL) {
                 dlog("        Controller mapping: %s", mapping);
                 SDL_free(mapping);
@@ -144,7 +157,7 @@ void con_close(void)
     }
 
     dlog("Closing current controller");
-    SDL_GameControllerClose(con);
+    SDL_CloseGamepad(con);
     con = NULL;
     joy_inst = -1;
     LeaveCriticalSection(&critical_section);
@@ -237,7 +250,7 @@ void con_get_inputs(inputs_t *i)
     while (SDL_PollEvent(&e))
         switch (e.type)
         {
-        case SDL_CONTROLLERDEVICEADDED:
+        case SDL_EVENT_GAMEPAD_ADDED:
             dlog("A device has been added");
             if (con == NULL)
             {
@@ -247,7 +260,7 @@ void con_get_inputs(inputs_t *i)
             else
                 dlog("    ...but there is already an active controller");
             break;
-        case SDL_CONTROLLERDEVICEREMOVED:
+        case SDL_EVENT_GAMEPAD_REMOVED:
             dlog("A device has been removed");
             if (e.cdevice.which == joy_inst)
             {
@@ -266,40 +279,40 @@ void con_get_inputs(inputs_t *i)
     LeaveCriticalSection(&critical_section);
 }
 
-static inline uint8_t con_get_but(SDL_GameControllerButton b)
+static inline uint8_t con_get_but(SDL_GamepadButton b)
 {
-    return SDL_GameControllerGetButton(con, b);
+    return SDL_GetGamepadButton(con, b);
 }
 
-static inline int16_t con_get_axis(SDL_GameControllerAxis a)
+static inline int16_t con_get_axis(SDL_GamepadAxis a)
 {
-    return sclamp(SDL_GameControllerGetAxis(con, a), -32767, 32767);
+    return sclamp(SDL_GetGamepadAxis(con, a), -32767, 32767);
 }
 
 void con_write_inputs(inputs_t *i)
 {
-    i->a      = con_get_but(SDL_CONTROLLER_BUTTON_A);
-    i->b      = con_get_but(SDL_CONTROLLER_BUTTON_B);
-    i->x      = con_get_but(SDL_CONTROLLER_BUTTON_X);
-    i->y      = con_get_but(SDL_CONTROLLER_BUTTON_Y);
-    i->back   = con_get_but(SDL_CONTROLLER_BUTTON_BACK);
-    i->guide  = con_get_but(SDL_CONTROLLER_BUTTON_GUIDE);
-    i->start  = con_get_but(SDL_CONTROLLER_BUTTON_START);
-    i->lstick = con_get_but(SDL_CONTROLLER_BUTTON_LEFTSTICK);
-    i->rstick = con_get_but(SDL_CONTROLLER_BUTTON_RIGHTSTICK);
-    i->lshoul = con_get_but(SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
-    i->rshoul = con_get_but(SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
-    i->dup    = con_get_but(SDL_CONTROLLER_BUTTON_DPAD_UP);
-    i->ddown  = con_get_but(SDL_CONTROLLER_BUTTON_DPAD_DOWN);
-    i->dleft  = con_get_but(SDL_CONTROLLER_BUTTON_DPAD_LEFT);
-    i->dright = con_get_but(SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
+    i->a      = con_get_but(SDL_GAMEPAD_BUTTON_SOUTH);
+    i->b      = con_get_but(SDL_GAMEPAD_BUTTON_EAST);
+    i->x      = con_get_but(SDL_GAMEPAD_BUTTON_WEST);
+    i->y      = con_get_but(SDL_GAMEPAD_BUTTON_NORTH);
+    i->back   = con_get_but(SDL_GAMEPAD_BUTTON_BACK);
+    i->guide  = con_get_but(SDL_GAMEPAD_BUTTON_GUIDE);
+    i->start  = con_get_but(SDL_GAMEPAD_BUTTON_START);
+    i->lstick = con_get_but(SDL_GAMEPAD_BUTTON_LEFT_STICK);
+    i->rstick = con_get_but(SDL_GAMEPAD_BUTTON_RIGHT_STICK);
+    i->lshoul = con_get_but(SDL_GAMEPAD_BUTTON_LEFT_SHOULDER);
+    i->rshoul = con_get_but(SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER);
+    i->dup    = con_get_but(SDL_GAMEPAD_BUTTON_DPAD_UP);
+    i->ddown  = con_get_but(SDL_GAMEPAD_BUTTON_DPAD_DOWN);
+    i->dleft  = con_get_but(SDL_GAMEPAD_BUTTON_DPAD_LEFT);
+    i->dright = con_get_but(SDL_GAMEPAD_BUTTON_DPAD_RIGHT);
 
-    i->alx    = con_get_axis(SDL_CONTROLLER_AXIS_LEFTX);
-    i->aly    = con_get_axis(SDL_CONTROLLER_AXIS_LEFTY);
-    i->arx    = con_get_axis(SDL_CONTROLLER_AXIS_RIGHTX);
-    i->ary    = con_get_axis(SDL_CONTROLLER_AXIS_RIGHTY);
-    i->altrig = con_get_axis(SDL_CONTROLLER_AXIS_TRIGGERLEFT);
-    i->artrig = con_get_axis(SDL_CONTROLLER_AXIS_TRIGGERRIGHT);
+    i->alx    = con_get_axis(SDL_GAMEPAD_AXIS_LEFTX);
+    i->aly    = con_get_axis(SDL_GAMEPAD_AXIS_LEFTY);
+    i->arx    = con_get_axis(SDL_GAMEPAD_AXIS_RIGHTX);
+    i->ary    = con_get_axis(SDL_GAMEPAD_AXIS_RIGHTY);
+    i->altrig = con_get_axis(SDL_GAMEPAD_AXIS_LEFT_TRIGGER);
+    i->artrig = con_get_axis(SDL_GAMEPAD_AXIS_RIGHT_TRIGGER);
 }
 
 void dlog(const char *fmt, ...)

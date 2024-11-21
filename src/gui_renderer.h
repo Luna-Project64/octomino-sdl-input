@@ -5,9 +5,12 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+
 #include "microui.h"
 
-void r_init(void);
+void r_init(HWND hwnd);
 void r_draw_rect(mu_Rect rect, mu_Color color);
 void r_draw_text(const char *text, mu_Vec2 pos, mu_Color color);
 void r_draw_icon(int id, mu_Rect rect, mu_Color color);

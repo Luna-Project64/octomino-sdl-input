@@ -2,8 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_opengl.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_opengl.h>
 #include <assert.h>
 #include "gui_renderer.h"
 #include "atlas.inl"
@@ -19,15 +19,41 @@ static int width  = 600;
 static int height = 600;
 static int buf_idx;
 
-static SDL_Window *window;
+static SDL_Window* parentWindow;
+static SDL_Window* dialogWindow;
 
+#define TITLE_NAME "Octomino's SDL Input"
 
-void r_init(void) {
+static SDL_Window* createParentWindowWrap(HWND hwnd)
+{
+    SDL_Window* window;
+    SDL_PropertiesID props = SDL_CreateProperties();
+    SDL_SetPointerProperty(props, SDL_PROP_WINDOW_CREATE_WIN32_HWND_POINTER, hwnd);
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_FLAGS_NUMBER, SDL_WINDOW_EXTERNAL);
+    window = SDL_CreateWindowWithProperties(props);
+    SDL_DestroyProperties(props);
+    return window;
+}
+
+static SDL_Window* createDialog(SDL_Window* parent)
+{
+    SDL_Window* window;
+    SDL_PropertiesID props = SDL_CreateProperties();
+    SDL_SetStringProperty(props, SDL_PROP_WINDOW_CREATE_TITLE_STRING, TITLE_NAME);
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, width);
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, height);
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_FLAGS_NUMBER, SDL_WINDOW_OPENGL | SDL_WINDOW_MODAL);
+	SDL_SetPointerProperty(props, SDL_PROP_WINDOW_CREATE_PARENT_POINTER, parent);
+    window = SDL_CreateWindowWithProperties(props);
+    SDL_DestroyProperties(props);
+    return window;
+}
+
+void r_init(HWND hwnd) {
     /* init SDL window */
-    window = SDL_CreateWindow(
-        PLUGIN_NAME, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-        width, height, SDL_WINDOW_OPENGL);
-    SDL_GL_CreateContext(window);
+	parentWindow = createParentWindowWrap(hwnd);
+	dialogWindow = createDialog(parentWindow);
+    SDL_GL_CreateContext(dialogWindow);
 
     /* init gl */
     glEnable(GL_BLEND);
@@ -185,9 +211,10 @@ void r_clear(mu_Color clr) {
 
 void r_present(void) {
     flush();
-    SDL_GL_SwapWindow(window);
+    SDL_GL_SwapWindow(dialogWindow);
 }
 
 void r_close(void) {
-    SDL_DestroyWindow(window);
+    SDL_DestroyWindow(dialogWindow);
+	SDL_DestroyWindow(parentWindow);
 }

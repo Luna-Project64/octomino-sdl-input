@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include <stdio.h>
 #include "gui_renderer.h"
 #include "microui.h"
@@ -100,7 +100,7 @@ static void coninfo_panel(mu_Context *ctx)
         
         mu_label(ctx,"Name");
         if (con != NULL) {
-            const char *name = SDL_GameControllerName(con);
+            const char *name = SDL_GetGamepadName(con);
             if (name != NULL) {
                 mu_label(ctx, name);
             } 
@@ -110,7 +110,7 @@ static void coninfo_panel(mu_Context *ctx)
 
         mu_label(ctx,"GameController mapping");
         if (con != NULL) {
-            char *mapping = SDL_GameControllerMapping(con);
+            char *mapping = SDL_GetGamepadMapping(con);
             if (mapping != NULL) {
                 mu_label(ctx, mapping);
                 SDL_free(mapping);
@@ -338,7 +338,7 @@ static int text_height(mu_Font font) {
 }
 
 
-void config_window() {
+void config_window(HWND hwnd) {
     EnterCriticalSection(&critical_section);
 
     if (!initialized) {
@@ -353,7 +353,7 @@ void config_window() {
     window_open = 1;
 
     /* init renderer */
-    r_init();
+    r_init(hwnd);
 
     /* init microui */
     context = malloc(sizeof(mu_Context));
@@ -368,24 +368,26 @@ void config_window() {
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
             switch (e.type) {
-                case SDL_QUIT: gui_deinit(); break;
-                case SDL_MOUSEMOTION: mu_input_mousemove(context, e.motion.x, e.motion.y); break;
-                case SDL_MOUSEWHEEL: mu_input_scroll(context, 0, e.wheel.y * -30); break;
-                case SDL_TEXTINPUT: mu_input_text(context, e.text.text); break;
+                case SDL_EVENT_QUIT:
+                case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
+                    gui_deinit(); break;
+                case SDL_EVENT_MOUSE_MOTION: mu_input_mousemove(context, e.motion.x, e.motion.y); break;
+                case SDL_EVENT_MOUSE_WHEEL: mu_input_scroll(context, 0, e.wheel.y * -30); break;
+                case SDL_EVENT_TEXT_INPUT: mu_input_text(context, e.text.text); break;
 
-                case SDL_MOUSEBUTTONDOWN:
-                case SDL_MOUSEBUTTONUP: {
+                case SDL_EVENT_MOUSE_BUTTON_DOWN:
+                case SDL_EVENT_MOUSE_BUTTON_UP: {
                     int b = button_map[e.button.button & 0xff];
-                    if (b && e.type == SDL_MOUSEBUTTONDOWN) { mu_input_mousedown(context, e.button.x, e.button.y, b); }
-                    if (b && e.type ==   SDL_MOUSEBUTTONUP) { mu_input_mouseup(context, e.button.x, e.button.y, b);   }
+                    if (b && e.type == SDL_EVENT_MOUSE_BUTTON_DOWN) { mu_input_mousedown(context, e.button.x, e.button.y, b); }
+                    if (b && e.type == SDL_EVENT_MOUSE_BUTTON_UP) { mu_input_mouseup(context, e.button.x, e.button.y, b);   }
                     break;
                 }
 
-                case SDL_KEYDOWN:
-                case SDL_KEYUP: {
-                    int c = key_map[e.key.keysym.sym & 0xff];
-                    if (c && e.type == SDL_KEYDOWN) { mu_input_keydown(context, c); }
-                    if (c && e.type ==   SDL_KEYUP) { mu_input_keyup(context, c);   }
+                case SDL_EVENT_KEY_DOWN:
+                case SDL_EVENT_KEY_UP: {
+                    int c = key_map[e.key.key & 0xff];
+                    if (c && e.type == SDL_EVENT_KEY_DOWN) { mu_input_keydown(context, c); }
+                    if (c && e.type == SDL_EVENT_KEY_UP) { mu_input_keyup(context, c);   }
                     break;
                 }
             }
