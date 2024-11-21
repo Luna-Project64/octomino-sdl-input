@@ -1,5 +1,8 @@
 #pragma once
 
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -14,6 +17,8 @@ extern "C"
 	bool rp_protect(void);
 	// Leave rundown protection critical section
 	void rp_unprotect(void);
+
+	extern DWORD srp_main_thread_id;
 
 #ifdef __cplusplus
 }

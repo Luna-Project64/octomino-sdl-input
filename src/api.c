@@ -316,6 +316,7 @@ EXPORT void CALL RomClosed(void)
 EXPORT void CALL RomOpen(void)
 {
     dlog("RomOpen() call");
+    srp_main_thread_id = GetWindowThreadProcessId(GetActiveWindow(), NULL);
     con_open();
     rp_activate();
 	// TODO: Race condition with DllConfig
