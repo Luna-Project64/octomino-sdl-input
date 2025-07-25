@@ -32,7 +32,7 @@ extern int initialized;
 
 #define PLUGIN_NAME    "Octomino SDL Input Plugin"
 #define PLUGIN_VERSION "1.0"
-#define PLUGIN_REPO ""
+#define PLUGIN_REPO "https://github.com/Luna-Project64/octomino-sdl-input"
 #define PLUGIN_ABOUT   \
     PLUGIN_NAME \
     "\nVersion " PLUGIN_VERSION \
