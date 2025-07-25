@@ -242,7 +242,6 @@ void con_get_inputs(inputs_t *i)
             {
                 dlog("    ...it was the active controller");
                 con_close();
-                con_open();
             }
             else
                 dlog("    ...it was not the active controller");
