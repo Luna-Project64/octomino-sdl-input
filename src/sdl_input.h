@@ -30,7 +30,7 @@ extern int initialized;
     TOSTRING(SDL_MINOR_VERSION) "." \
     TOSTRING(SDL_MICRO_VERSION)
 
-#define PLUGIN_NAME    "Octomino SDL Input Plugin"
+#define PLUGIN_NAME "Octomino's SDL Input"
 #define PLUGIN_VERSION "1.0"
 #define PLUGIN_REPO "https://github.com/Luna-Project64/octomino-sdl-input"
 #define PLUGIN_ABOUT   \
